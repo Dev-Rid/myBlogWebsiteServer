@@ -1,31 +1,27 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const router = require("./routes/authRoutes");
-
-dotenv.config();
+const authRouter = require("./routes/authRoutes");
 
 const app = express();
 app.use(express.json());
 
-
 // Register routes
-app.use("/api/auth", router);
-app.use("/api/auth", router);
+app.use("/api/auth", authRouter);
 
-
-// Connect to DB and start server
+// Determine port, with a fallback
+const PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
-        app.listen(3003, () => {
-            console.log("Database connected and server is running on port 3003");
-        });
-    })
-    .catch((err) => {
-        console.error("Failed to connect to MongoDB", err);
-        process.exit(1); 
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Database connected and server is running on port ${PORT}`);
     });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
+    process.exit(1);
+  });
 
 
 
